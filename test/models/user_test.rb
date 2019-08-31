@@ -84,4 +84,22 @@ class UserTest < ActiveSupport::TestCase
       @user.destroy
     end
   end
+
+  test "feed should have the write posts" do
+    michael = users(:michael)
+    lana = users(:lana)
+    archer = users(:archer)
+    # Posts from followed users
+    lana.microposts.each do |post_following|
+      assert michael.feed.include?(post_following)
+    end
+    # Post from self
+    michael.microposts.each do |post_self|
+      assert michael.feed.include?(post_self)
+    end
+    # Posts from unfollowes user
+    archer.microposts.each do |post_unfollowed|
+      assert_not michael.feed.include?(post_unfollowed)
+    end
+  end
 end
